@@ -1,0 +1,107 @@
+{% load static %}
+<div id="products" class="bg-gray-200" >
+  <div class="mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+
+<div class="flex flex-col md:flex-row items-center justify-center mb-6">
+  <!-- Title -->
+  <h2 class="text-2xl font-bold tracking-tight text-gray-900">
+    Наши продукты
+  </h2>
+
+</div>
+
+<div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+
+
+    {% for product in products %}
+    <div class="group relative">
+    <img
+         src="{{product.main_image.url }}"
+         alt="Additional image for {{ product.name }}"
+         class="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80"
+    />
+
+    <div class="mt-4 flex justify-between">
+      <div>
+        <h3 class="text-sm text-gray-700">
+          <a href="{% url 'product' product.id %}">
+            <span aria-hidden="true" class="absolute inset-0"></span>
+              {{product.name}}
+          </a>
+        </h3>
+        <p class="mt-1 text-sm text-gray-500">{{ product.description|truncatechars:40}}</p>
+      </div>
+      <p class="text-sm font-medium text-gray-900">{{product.price}}</p>
+    </div>
+  </div>
+
+
+    {% empty %}
+        <div class="col-span-full flex flex-col items-center text-center py-10">
+
+          <img
+            src="{% static 'images/notFound.png' %}"
+            alt="No products found"
+            class="w-60 opacity-80 mb-6"
+          />
+
+          <h3 class="text-xl font-semibold text-gray-700 mb-2">
+           Не найдено ни одного товара для: <span class="text-indigo-600">"{{ request.GET.q }}"</span>
+          </h3>
+
+          <p class="text-gray-600 mb-6">
+            Не удалось найти подходящие товары. Свяжитесь с нами, если вам нужна помощь.
+          </p>
+
+          <a href="#contact"
+             class="inline-block bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 transition">
+             Связаться с нами
+          </a>
+
+        </div>
+
+
+    {% endfor %}
+
+</div>
+
+{% if products.has_other_pages %}
+<div class="flex justify-center py-4 space-x-2">
+
+  <!-- Previous Button -->
+  {% if products.has_previous %}
+    <a href="?page={{ products.previous_page_number }}#products"
+       class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
+       Предыдущая
+    </a>
+  {% else %}
+    <span class="px-4 py-2 bg-gray-100 text-gray-400 rounded cursor-not-allowed">Предыдущая</span>
+  {% endif %}
+
+  <!-- Page Numbers -->
+  {% for num in products.paginator.page_range %}
+    {% if num == products.number %}
+      <span class="px-4 py-2 bg-red-600 text-white rounded">{{ num }}</span>
+    {% else %}
+      <a href="?page={{ num }}#products"
+         class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-red-300">{{ num }}</a>
+    {% endif %}
+  {% endfor %}
+
+  <!-- Next Button -->
+  {% if products.has_next %}
+    <a href="?page={{ products.next_page_number }}#products"
+       class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
+       Следующий
+    </a>
+  {% else %}
+    <span class="px-4 py-2 bg-gray-100 text-gray-400 rounded cursor-not-allowed">Следующий</span>
+  {% endif %}
+
+</div>
+{% endif %}
+
+
+
+</div>
+</div>

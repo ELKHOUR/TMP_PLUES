@@ -1,0 +1,42 @@
+{% load static %}
+
+<section class="text-red-800 py-20 mt-4">
+  <div class="container mx-auto px-4">
+    <div class="md:flex md:items-center md:gap-12">
+
+      <!-- Right Content -->
+      <div class="md:w-1/2">
+        <h2 class="text-3xl font-bold mb-4 text-red-800">Присоединяйтесь к нашей команде</h2>
+        <p class="text-gray-500 mb-6">
+          В нашей компании мы уверены, что великие продукты создаются благодаря людям, которые любят своё дело. Присоединяйтесь и станьте частью нашей команды!
+        </p>
+
+        <form action="#" method="POST" class="flex flex-col sm:flex-row items-center gap-3">
+            {% csrf_token %}
+
+          <input
+            type="email"
+            name="email"
+            required
+            placeholder="Введите вашу электронную почту"
+            class="w-full sm:flex-1 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-800"
+          >
+        <button
+            type="submit"
+            class="inline-block rounded-md border border-red-800 px-6 py-2 text-center font-medium text-black
+              hover:text-red-900 hover:bg-white transition-colors duration-300">
+            Подписаться
+        </button>
+
+        </form>
+
+      </div>
+
+      <!-- Left Image -->
+      <div class="md:w-1/2 mb-8 md:mb-0">
+        <img src="{% static 'images/sub.jpg' %}" alt="Team" class="w-full rounded-lg shadow-lg object-cover">
+      </div>
+
+    </div>
+  </div>
+</section>

@@ -1,0 +1,30 @@
+<footer class="bg-gray-900 text-gray-300 py-8 mt-12">
+  <div class="container mx-auto px-4 text-center">
+
+    <!-- Company name / logo -->
+    <h2 class="text-xl font-semibold text-red-800 mb-2">ТФП ИМПУЛЬС</h2>
+
+    <!-- Description -->
+    <p class="text-gray-400 mb-6">
+      Будьте на связи с нами — получайте последние новости, события и обновления.
+    </p>
+
+    <!-- Social links -->
+    <div class="flex justify-center space-x-6 mb-6">
+      <a href="#" class="hover:text-red-900 transition">Facebook</a>
+      <a href="#" class="hover:text-red-900 transition">Twitter</a>
+      <a href="#" class="hover:text-red-900 transition">YouTube</a>
+      <a href="#" class="hover:text-red-900 transition">Vk</a>
+    </div>
+
+    <!-- Copyright -->
+    <p class="text-sm text-gray-500">
+      © <span id="year"></span> ВашаКомпания. Все права защищены.
+    </p>
+
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>

@@ -1,0 +1,756 @@
+{% load static %}
+<div id="chatbot-widget">
+    <!-- Chat Toggle Button -->
+    <button id="chat-toggle" class="chat-toggle-btn" aria-label="Открыть чат">
+        <span class="chat-icon">💬</span>
+        <span class="notification-dot hidden"></span>
+    </button>
+
+    <!-- Chat Container -->
+    <div id="chat-container" class="chat-container hidden">
+        <!-- Chat Header -->
+        <div class="chat-header">
+            <div class="chat-title">
+                <h3>Добро пожаловать в чат</h3>
+                <p class="chat-subtitle">Мы готовы помочь вам</p>
+            </div>
+            <button id="chat-close" class="chat-close-btn" aria-label="Закрыть чат">
+                ✕
+            </button>
+        </div>
+
+        <!-- Messages Container -->
+        <div id="messages" class="messages-container" role="log" aria-live="polite">
+            <div class="welcome-message">
+                <div class="bot-message">
+                    <div class="message-content">
+                        Привет! Я ваш умный помощник. Чем могу помочь сегодня?
+                    </div>
+                    <div class="message-time">{{ current_time|time:"H:i" }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Replies -->
+        <div id="quick-replies" class="quick-replies">
+            <button class="quick-btn" data-type="product" data-message="أريد الاستفسار عن منتج">
+                 Узнать о продукте...
+            </button>
+            <button class="quick-btn" data-type="company" data-message="أريد معرفة المزيد عن الشركة">
+                Информация о компании...
+            </button>
+            <button class="quick-btn" data-type="our_serves" data-message="i wont to know this service">
+               Услуги...
+            </button>
+        </div>
+
+        <!-- Typing Indicator -->
+        <div id="typing-indicator" class="typing-indicator hidden">
+            <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <span class="typing-text">Печатает...</span>
+        </div>
+
+        <!-- Chat Input -->
+        <form id="chat-form" class="chat-form">
+            {% csrf_token %}
+            <div class="input-group">
+                <input
+                    id="chat-input"
+                    type="text"
+                    placeholder="Напишите сообщение здесь..."
+                    class="chat-input"
+                    aria-label="Сообщение чата"
+                    maxlength="500"
+                    name="q"
+                />
+                <button
+                    type="submit"
+                    class="send-btn"
+                    aria-label="Отправить сообщение"
+                    disabled
+                >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="input-footer">
+                <span class="char-count">0/500</span>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Styles -->
+<style>
+.chat-toggle-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 4rem;
+    height: 4rem;
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.chat-toggle-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+}
+
+.notification-dot {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    background: #ef4444;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.chat-container {
+    position: fixed;
+    bottom: 7rem;
+    right: 2rem;
+    width: 24rem;
+    height: 32rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.chat-header {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    color: white;
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-title h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.chat-subtitle {
+    margin: 0.25rem 0 0 0;
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
+.chat-close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    transition: background 0.2s ease;
+}
+
+.chat-close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.messages-container {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    background: #f8fafc;
+}
+
+.welcome-message {
+    margin-bottom: 1rem;
+}
+
+.bot-message, .user-message {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-message {
+    align-items: flex-end;
+}
+
+.bot-message {
+    align-items: flex-start;
+}
+
+.message-content {
+    padding: 0.75rem 1rem;
+    border-radius: 1rem;
+    max-width: 85%;
+    word-wrap: break-word;
+    line-height: 1.4;
+}
+
+.bot-message .message-content {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-bottom-left-radius: 0.25rem;
+}
+
+.user-message .message-content {
+    background: #dc2626;
+    color: white;
+    border-bottom-right-radius: 0.25rem;
+}
+
+.message-time {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+}
+
+.quick-replies {
+    padding: 0.75rem;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    background: white;
+}
+
+.quick-btn {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.quick-btn:hover {
+    background: #e2e8f0;
+    transform: translateY(-1px);
+}
+
+.typing-indicator {
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #64748b;
+}
+
+.typing-dots {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.typing-dots span {
+    width: 0.5rem;
+    height: 0.5rem;
+    background: #64748b;
+    border-radius: 50%;
+    animation: typing-bounce 1.4s ease-in-out infinite both;
+}
+
+.typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+.typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typing-bounce {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
+}
+
+.chat-form {
+    border-top: 1px solid #e2e8f0;
+    padding: 0.75rem;
+    background: white;
+}
+
+.input-group {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+}
+
+.chat-input {
+    flex: 1;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.5rem;
+    padding: 0.75rem 1rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+    resize: none;
+    min-height: 2.5rem;
+    max-height: 6rem;
+}
+
+.chat-input:focus {
+    border-color: #dc2626;
+}
+
+.send-btn {
+    background: #dc2626;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.send-btn:hover:not(:disabled) {
+    background: #b91c1c;
+    transform: scale(1.05);
+}
+
+.send-btn:disabled {
+    background: #cbd5e1;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.input-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.25rem;
+}
+
+.char-count {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+@media (max-width: 640px) {
+    .chat-container {
+        width: calc(100vw - 2rem);
+        height: calc(100vh - 8rem);
+        right: 1rem;
+        bottom: 5rem;
+    }
+
+    .chat-toggle-btn {
+        bottom: 1rem;
+        right: 1rem;
+    }
+}
+
+.hidden {
+    display: none !important;
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(1rem); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.quick-btn.active {
+    background-color: #dc2626;
+    color: white;
+    border-color: #b91c1c;
+}
+
+</style>
+
+<!-- JavaScript -->
+<script>
+// ======= Chatbot API =======
+class ChatbotAPI {
+    constructor(csrfToken=null) {
+        this.csrfToken = csrfToken || document.querySelector('[name=csrfmiddlewaretoken]')?.value || '';
+        this.urlMap = {
+            "product": "/chatbot/product/",
+            "company": "/chatbot/company/",
+            "our_serves": "/chatbot/services/",
+            "general": "/chatbot/general/"
+        };
+    }
+
+
+
+    async sendMessage(message, mode="general") {
+        const url = this.urlMap[mode] || this.urlMap["general"];
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": this.csrfToken
+                },
+                body: JSON.stringify({ message })
+            });
+
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+            const data = await response.json();
+
+        return data.response || "Я не понял ваш вопрос.";
+        } catch (err) {
+            console.error("ChatbotAPI Error:", err);
+        return "Произошла ошибка при подключении к серверу 😞";
+        }
+    }
+}
+
+
+
+
+
+
+
+// ======= Chatbot UI =======
+class ChatbotUI {
+    constructor(api) {
+        this.api = api;
+        this.isOpen = false;
+        this.currentMode = "general"; // الوضع الافتراضي
+        this.initializeElements();
+        this.attachEventListeners();
+    }
+
+    initializeElements() {
+        this.elements = {
+            toggleBtn: document.getElementById('chat-toggle'),
+            chatContainer: document.getElementById('chat-container'),
+            closeBtn: document.getElementById('chat-close'),
+            chatForm: document.getElementById('chat-form'),
+            chatInput: document.getElementById('chat-input'),
+            messagesContainer: document.getElementById('messages'),
+            quickReplies: document.getElementById('quick-replies'),
+            typingIndicator: document.getElementById('typing-indicator'),
+            charCount: document.querySelector('.char-count'),
+            sendBtn: document.querySelector('.send-btn')
+        };
+    }
+
+
+
+
+
+
+
+attachEventListeners() {
+        // فتح / إغلاق الشات
+        this.elements.toggleBtn.addEventListener('click', () => this.toggleChat());
+        this.elements.closeBtn.addEventListener('click', () => this.closeChat());
+
+
+
+let typingTimeout;
+
+this.elements.chatInput.addEventListener('input', (e) => {
+    const message = e.target.value.trim();
+
+    // شرط: تنفيذ الكود فقط إذا كان الوضع عام
+    if ((this.currentMode || "general").toLowerCase() !== "general") return;
+
+    // مسح أي مؤقت سابق
+    clearTimeout(typingTimeout);
+
+    // تأخير التنفيذ 600ms بعد آخر حرف كتب
+    typingTimeout = setTimeout(async () => {
+
+        if (message === "") {
+            // لو مسح المستخدم كل النص، اعرض الـ 3 أزرار الافتراضية
+            showDefaultButtons.call(this);
+            return;
+        }
+
+        try {
+            const response = await fetch(`/chatbot/search_CommonQuestions/?q=${encodeURIComponent(message)}`);
+            const data = await response.json();
+
+            this.elements.quickReplies.innerHTML = ''; // مسح الأزرار القديمة
+
+            if (data.CommonQuestions.length > 0) {
+                // عرض أول 5 نتائج فقط
+                data.CommonQuestions.slice(0, 4).forEach(CommonQuestion => {
+                    const btn = document.createElement('button');
+                    btn.classList.add('quick-btn');
+                    btn.textContent = CommonQuestion.question_text;
+                    btn.dataset.message = CommonQuestion.question_text;
+
+                    btn.dataset.type = "general";
+                    this.elements.quickReplies.appendChild(btn);
+                });
+            } else {
+                // لو مفيش نتائج، اعرض الأسئلة الافتراضية
+                showDefaultButtons.call(this);
+            }
+
+        } catch (error) {
+            console.error("خطأ أثناء البحث:", error);
+        }
+
+    }, 600); // هنا الـ debounce بـ 600ms
+});
+
+// دالة لإظهار الأزرار الافتراضية
+function showDefaultButtons() {
+    const defaultButtons = [
+        { text: 'Узнать о продукте...', type: 'product', message: 'أريد الاستفسار عن منتج' },
+        { text: 'Информация о компании...', type: 'company', message: 'أريد معرفة المزيد عن الشركة' },
+        { text: 'Услуги... ', type: 'our_serves', message: 'i want to know this service' },
+    ];
+
+    this.elements.quickReplies.innerHTML = '';
+    defaultButtons.forEach(btnData => {
+        const btn = document.createElement('button');
+        btn.classList.add('quick-btn');
+        btn.dataset.type = btnData.type;
+        btn.dataset.message = btnData.message;
+        btn.textContent = btnData.text;
+        this.elements.quickReplies.appendChild(btn);
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // عداد الأحرف وزر الإرسال
+        this.elements.chatInput.addEventListener('input', (e) => {
+            const length = e.target.value.length;
+            this.elements.charCount.textContent = `${length}/500`;
+            this.elements.sendBtn.disabled = length === 0;
+        });
+
+        // إرسال الرسالة من الإدخال
+        this.elements.chatForm.addEventListener('submit',async (e) => {
+            e.preventDefault();
+            const message = this.elements.chatInput.value.trim();
+
+            if (message) {
+                this.addUserMessage(message);
+                this.elements.chatInput.value = '';
+                this.elements.charCount.textContent = '0/500';
+                this.elements.sendBtn.disabled = true;
+                this.sendMessageToAPI(message, this.currentMode);
+            }
+
+
+
+            try {
+                const response = await fetch("/chatbot/saveUpdateOne/", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || ''
+
+                    },
+                    body: JSON.stringify({ message })
+                });
+
+
+
+            }catch (error) {
+                console.error('Error:', error);
+                alert('تعذر الاتصال بالخادم!');
+    }
+
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     // الردود السريعة (زر تبديل الوضع)
+    this.elements.quickReplies.addEventListener('click', (e) => {
+        const btn = e.target;
+
+        if (btn.classList.contains('quick-btn')) {
+            const message = btn.dataset.message;
+            const mode = btn.dataset.type;
+
+            // 🔁 Toggle behavior
+            if (this.currentMode === mode) {
+                // Same button clicked again → deactivate
+                this.currentMode = null;
+                btn.classList.remove('active');
+            } else {
+                // New button → activate it
+                this.currentMode = mode;
+
+                // Remove active class from all quick buttons
+                document.querySelectorAll('.quick-btn').forEach((b) => b.classList.remove('active'));
+
+                // Highlight current one
+                btn.classList.add('active');
+
+                // Add user message & send it
+                this.addUserMessage(message);
+                this.sendMessageToAPI(message, mode);
+            }
+        }
+    });
+
+
+
+
+
+}
+
+
+    highlightActiveButton(activeButton) {
+        const buttons = this.elements.quickReplies.querySelectorAll('.quick-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        activeButton.classList.add('active');
+    }
+
+    toggleChat() {
+        this.isOpen = !this.isOpen;
+        if (this.isOpen) {
+            this.elements.chatContainer.classList.remove('hidden');
+            this.elements.chatContainer.classList.add('fade-in');
+            this.elements.chatInput.focus();
+        } else {
+            this.closeChat();
+        }
+    }
+
+    closeChat() {
+        this.isOpen = false;
+        this.elements.chatContainer.classList.add('hidden');
+    }
+
+    addUserMessage(text) {
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const html = `<div class="user-message fade-in"><div class="message-content">${text}</div><div class="message-time">${time}</div></div>`;
+        this.elements.messagesContainer.insertAdjacentHTML('beforeend', html);
+        this.scrollToBottom();
+    }
+
+    addBotMessage(text) {
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const html = `<div class="bot-message fade-in"><div class="message-content">${text}</div><div class="message-time">${time}</div></div>`;
+        this.elements.messagesContainer.insertAdjacentHTML('beforeend', html);
+        this.scrollToBottom();
+    }
+
+    showTyping() {
+        this.elements.typingIndicator.classList.remove('hidden');
+        this.scrollToBottom();
+    }
+
+    hideTyping() {
+        this.elements.typingIndicator.classList.add('hidden');
+    }
+
+    scrollToBottom() {
+        this.elements.messagesContainer.scrollTop = this.elements.messagesContainer.scrollHeight;
+    }
+
+    async sendMessageToAPI(message, mode="general") {
+        this.showTyping();
+        try {
+            const reply = await this.api.sendMessage(message, mode);
+            this.hideTyping();
+            this.addBotMessage(reply);
+
+        } catch (err) {
+            this.hideTyping();
+            this.addBotMessage("حدث خطأ أثناء الاتصال بالخادم 😞");
+            console.error(err);
+        }
+    }
+}
+
+
+
+
+// ======= Initialize =======
+document.addEventListener('DOMContentLoaded', () => {
+    const api = new ChatbotAPI();
+    new ChatbotUI(api);
+});
+
+
+
+
+
+</script>
+

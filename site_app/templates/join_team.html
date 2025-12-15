@@ -1,0 +1,55 @@
+{% load static %}
+<section class="text-red-800 py-20 mt-4">
+  <div class="container mx-auto px-4">
+    <div class="md:flex md:items-center md:gap-12">
+
+      <!-- Left Image -->
+      <div class="md:w-1/2 mb-8 md:mb-0">
+        <img src="{% static 'images/team.jpg' %}" alt="Team" class="w-full rounded-lg shadow-lg object-cover">
+      </div>
+
+      <!-- Right Content -->
+      <div class="md:w-1/2">
+        <h2 class="text-3xl font-bold mb-4 text-red-800">Присоединяйтесь к нашей команде</h2>
+        <p class="text-gray-500 mb-6">
+          В нашей компании мы уверены, что великие продукты создаются благодаря людям, которые любят своё дело. Мы ищем энергичных и ответственных специалистов, готовых развиваться,
+            учиться новому и вносить свой вклад в производство высококачественных механических компонентов.
+        </p>
+
+        <!-- Benefits List -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          <div class="flex items-center space-x-2">
+            <span class="text-gray-500 text-lg">✔</span>
+            <span>Конкурентная зарплата</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-gray-500 text-lg">✔</span>
+            <span>Гибкий график работы</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-red-100 text-lg">✔</span>
+            <span>30 дней оплачиваемого отпуска</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-gray-500 text-lg">✔</span>
+            <span>Ежегодные корпоративные мероприятия</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-gray-500 text-lg">✔</span>
+            <span>Соцпакет для вас и вашей семьи</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-gray-500 text-lg">✔</span>
+            <span>Приятная рабочая атмосфера</span>
+          </div>
+        </div>
+
+        <!-- Link -->
+        <a href="{% url 'application_form' %}" class="text-red-800 hover:text-red-900 font-medium inline-flex items-center">
+          К форме заявки &rarr;
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>

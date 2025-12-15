@@ -1,0 +1,128 @@
+{% load static %}
+<style>
+    /* Hide navbar links & search when screen width < 650px */
+@media (max-width: 650px) {
+  #services{
+    display: none !important;
+  }
+
+}
+
+</style>
+<div id="about" class="relative h-screen overflow-hidden">
+
+
+      <!-- Background Video -->
+  <video autoplay muted loop class="absolute top-0 left-0 w-full h-full object-cover opacity-30 -z-10">
+    <source src="{% static 'images/v_1.mp4' %}" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <div class="pt-16 pb-80 sm:pt-24 sm:pb-40 lg:pt-40 lg:pb-48">
+    <div class="relative mx-auto max-w-7xl px-4 sm:static sm:px-6 lg:px-8">
+
+      <div class="sm:max-w-lg">
+        <!-- Main Title -->
+        <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+          О НАШЕЙ КОМПАНИИ
+        </h1>
+
+        <!-- Rotating Text -->
+        <p id="changing-text" class="mt-4 text-xl text-gray-500 transition-opacity duration-1000 ease-in-out opacity-100">
+            ООО «ТФП ИМПУЛЬС», российская средняя компания в области производства и поставки промышленных запчастей и комплектующих.
+        </p>
+      </div>
+
+      <div>
+        <div class="mt-10">
+          <!-- Decorative image grid -->
+          <div aria-hidden="true" class="pointer-events-none lg:absolute lg:inset-y-0 lg:mx-auto lg:w-full lg:max-w-7xl">
+            <div class="absolute transform sm:top-0 sm:left-1/2 sm:translate-x-8 lg:top-1/2 lg:left-1/2 lg:translate-x-8 lg:-translate-y-1/2">
+              <div class="flex items-center space-x-6 lg:space-x-8">
+                <div class="grid shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8">
+                  <div class="h-64 w-44 overflow-hidden rounded-lg sm:opacity-0 lg:opacity-100">
+                    <img src="{% static 'images/one.png' %}" alt="" class="size-full object-cover" />
+                  </div>
+                  <div class="h-64 w-44 overflow-hidden rounded-lg">
+                    <img src="{% static 'images/two.png' %}" alt="" class="size-full object-cover" />
+                  </div>
+                </div>
+                <div class="grid shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8">
+                  <div class="h-64 w-44 overflow-hidden rounded-lg">
+                    <img src="{% static 'images/three.png' %}" alt="" class="size-full object-cover" />
+                  </div>
+                  <div class="h-64 w-44 overflow-hidden rounded-lg">
+                    <img src="{% static 'images/four.png' %}" alt="" class="size-full object-cover" />
+                  </div>
+                  <div class="h-64 w-44 overflow-hidden rounded-lg">
+                    <img src="{% static 'images/five.png' %}" alt="" class="size-full object-cover" />
+                  </div>
+                </div>
+                <div class="grid shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8">
+                  <div class="h-64 w-44 overflow-hidden rounded-lg">
+                    <img src="{% static 'images/six.png' %}" alt="" class="size-full object-cover" />
+                  </div>
+                  <div class="h-64 w-44 overflow-hidden rounded-lg">
+                    <img src="{% static 'images/seven.png' %}" alt="" class="size-full object-cover" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Optional Button -->
+          <a href="{% url 'contact' %}" class="inline-block rounded-md border border-red-600 px-4 py-3 text-center font-medium text-white
+          hover:text-red-600 hover:bg-white transition-colors duration-300">
+            СВЯЗАТЬСЯ С НАМИ
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<main id="services" class=" md:block bg-white container mx-auto py-20 px-4">
+
+  <!-- Services Grid -->
+  <div  class="grid grid-cols-4 gap-8 text-center">
+
+            <!-- Service 1 -->
+          {% for service in services %}
+               <div class="flex flex-col items-center space-y-4 p-6 transition">
+                    <!-- Display service image -->
+                    <img src="{{ service.ServiceImage.url }}" alt="{{ service.ServiceName }}" class="w-24 h-24 object-cover rounded-full">
+
+                    <h3 class="text-xl font-semibold text-gray-800">{{ service.ServiceName }}</h3>
+                    <p class="text-gray-500 text-sm">{{ service.ServiceDescription }}</p>
+               </div>
+
+          {% empty %}
+              <h1> УСЛУГИ </h1>
+          {% endfor %}
+  </div>
+
+
+</main>
+
+
+<!-- JavaScript for rotating texts -->
+<script>
+  const texts = [
+   {% for value in values %}
+      "{{ value|escapejs }}"{% if not forloop.last %},{% endif %}
+    {% endfor %}
+   ];
+
+  const textElement = document.getElementById("changing-text");
+  let index = 0;
+
+  setInterval(() => {
+    textElement.classList.add("opacity-0");
+    setTimeout(() => {
+      index = (index + 1) % texts.length;
+      textElement.textContent = texts[index];
+      textElement.classList.remove("opacity-0");
+    }, 1000); // fade-out duration
+  }, 6000); // change text every 6 seconds
+</script>

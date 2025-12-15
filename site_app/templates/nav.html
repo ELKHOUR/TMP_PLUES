@@ -1,0 +1,120 @@
+{% load static %}
+<!-- Navbar -->
+<style>
+    /* Hide navbar links & search when screen width < 650px */
+@media (max-width: 650px) {
+  #nav-bar, #nav-search {
+    display: none !important;
+  }
+
+}
+
+</style>
+<header class="bg-white shadow fixed top-0 left-0 w-full z-50">
+  <nav class="container mx-auto flex items-center justify-between px-4 py-4">
+    <!-- Logo -->
+      <div class="flex items-center space-x-4">
+
+          <a href="{% url 'home' %}" class="flex items-center space-x-2 mr-4 border-b-2 border-b-red-600">
+            <img src="{% static 'images/TMlogo.png' %}" alt="Logo" class="h-8 w-8">
+            <span class="font-semibold text-lg text-gray-800 ">ТФП ИМПУЛЬС</span>
+          </a>
+
+          <ul id="nav-bar" class="sm:hidden md:flex items-center space-x-8 ml-auto text-gray-700">
+              <li>
+                <a href="#" class="text-black border-b-2 border-transparent hover:border-red-600 transition-all duration-300">
+                  О НАС
+                </a>
+              </li>
+              <li>
+                <a href="#services" class="text-black border-b-2 border-transparent hover:border-red-600 transition-all duration-300">УСЛУГИ</a>
+              </li>
+              <li>
+                <a href="#products" class="text-black border-b-2 border-transparent hover:border-red-600 transition-all duration-300">ПРОДУКТЫ</a>
+              </li>
+              <li>
+                <a href="{% url 'contact' %}" class="text-black border-b-2 border-transparent hover:border-red-600 transition-all duration-300">КОНТАКТЫ</a>
+              </li>
+          </ul>
+
+
+
+      </div>
+
+
+    <!-- Desktop Menu -->
+    <ul id="nav-search" class="sm:hidden md:flex items-center space-x-8 text-gray-700 font-medium">
+        <!-- Search Input -->
+      <li>
+          <form action="{% url 'home' %}#products" method="GET" class="flex items-center w-full border border-red-800 rounded-lg px-3 py-2">
+            <input
+              type="text"
+              name="q"
+              placeholder="Поиск продукта..."
+              class="w-full outline-none bg-transparent "
+              value="{{ request.GET.q }}"
+            >
+            <button type="submit" class="ml-2">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-500">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18.5a7.5 7.5 0 006.15-2.85z" />
+              </svg>
+            </button>
+          </form>
+      </li>
+    </ul>
+
+    <!-- Mobile Menu Button -->
+    <button id="menu-btn" class="md:hidden text-gray-700 focus:outline-none">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+        stroke="currentColor" class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M3.75 5.25h16.5m-16.5 6h16.5m-16.5 6h16.5" />
+      </svg>
+    </button>
+  </nav>
+
+  <!-- Mobile Dropdown -->
+  <div id="mobile-menu" class="hidden md:hidden border-t bg-white">
+    <ul class="flex flex-col p-4 space-y-2 text-gray-700 font-medium">
+
+      <li>
+          <form action="{% url 'home' %}#products" method="GET" class="flex items-center w-full border border-red-600 rounded-lg px-3 py-2">
+            <input
+              type="text"
+              name="q"
+              placeholder="Поиск продукта..."
+              class="w-full outline-none bg-transparent"
+              value="{{ request.GET.q }}"
+            >
+            <button type="submit" class="ml-2">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-500">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18.5a7.5 7.5 0 006.15-2.85z" />
+              </svg>
+            </button>
+          </form>
+      </li>
+
+
+      <li><a href="#about" class="text-black border-b-2 border-transparent hover:border-red-600 transition-all duration-300">О НАС</a></li>
+      <li><a href="#products" class="text-black border-b-2 border-transparent hover:border-red-600 transition-all duration-300">ПРОДУКТЫ</a></li>
+      <li><a href="{% url 'contact' %}" class="text-black border-b-2 border-transparent hover:border-red-600 transition-all duration-300">КОНТАКТЫ</a></li>
+    </ul>
+  </div>
+</header>
+
+
+
+
+
+<!-- Simple mobile toggle -->
+<script>
+
+const btn = document.getElementById('menu-btn');
+const menu = document.getElementById('mobile-menu');
+btn.addEventListener('click', () => {
+menu.classList.toggle('hidden');
+});
+
+
+
+</script>

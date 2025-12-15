@@ -1,0 +1,42 @@
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}TMP_IMPLOCE{% endblock %}</title>
+
+  <!-- ✅ Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+
+
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+/>
+
+
+
+   <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased">
+
+<div id="preloader" class="fixed inset-0 bg-white flex justify-center items-center z-[9999]">
+  <div class="w-14 h-14 border-8 border-gray-200 rounded-full animate-spin border-t-red-500"></div>
+</div>
+
+
+
+
+  {% block content %}
+
+
+  {% endblock %}
+
+<script src="{% static 'js/script.js' %}"></script>
+
+
+</body>
+</html>
