@@ -49,6 +49,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+        'whitenoise.middleware.WhiteNoiseMiddleware',  # إن كنت تستخدم static
+
 ]
 
 ROOT_URLCONF = 'main_project.urls'
@@ -143,3 +145,8 @@ EMAIL_HOST_USER = 'mahmoud.reda45667@gmail.com'
 EMAIL_HOST_PASSWORD = 'xtzq ldwn xtak jarx'  # NOT your normal password — use an App Password
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+
+ALLOWED_HOSTS = os.environ.get(
+    "ALLOWED_HOSTS",
+    "localhost 127.0.0.1"
+).split()
